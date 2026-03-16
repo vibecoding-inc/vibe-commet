@@ -57,8 +57,12 @@ class _TimelineEventViewPollState extends State<TimelineEventViewPoll>
       }
     }
 
+    // Resolve nickname at build time so room state changes propagate immediately
+    var resolvedSenderName =
+        widget.timeline.room.getMemberNickname(senderId) ?? senderName;
+
     return TimelineEventLayoutMessage(
-      senderName: senderName,
+      senderName: resolvedSenderName,
       senderColor: senderColor,
       senderAvatar: senderAvatar,
       showSender: true,

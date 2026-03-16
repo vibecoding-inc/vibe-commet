@@ -720,7 +720,8 @@ class MatrixRoom extends Room {
     _displayName = _matrixRoom.getLocalizedDisplayname();
     if (event.state.type == "m.room.name" ||
         event.state.type == "m.room.avatar" ||
-        event.state.type == "m.room.topic") {
+        event.state.type == "m.room.topic" ||
+        event.state.type == nicknameEventType) {
       _onUpdate.add(null);
     }
   }
@@ -816,6 +817,32 @@ class MatrixRoom extends Room {
     await matrixRoom.setPower(id, (role as MatrixRole).powerLevel);
 
     await matrixRoom.waitForRoomInSync();
+  }
+
+  // Custom state event type for per-room user nicknames.
+  // State key: user ID (e.g., "@user:matrix.org")
+  // Content: { "nickname": "Display Name" } or {} to clear
+  static const nicknameEventType = "com.commet.nickname";
+
+  @override
+  String? getMemberNickname(String userId) {
+    final state = matrixRoom.getState(nicknameEventType, userId);
+    if (state != null) {
+      final nickname = state.content["nickname"];
+      if (nickname is String && nickname.isNotEmpty) {
+        return nickname;
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<void> setMemberNickname(String userId, String? nickname) async {
+    final content = (nickname != null && nickname.isNotEmpty)
+        ? {"nickname": nickname}
+        : <String, dynamic>{};
+    await matrixRoom.client
+        .setRoomStateWithKey(matrixRoom.id, nicknameEventType, userId, content);
   }
 
   @override

@@ -35,4 +35,14 @@ abstract class Permissions {
   bool get canEditChildren => true;
 
   bool get canInviteUser => true;
+
+  /// Whether the current user can set channel-scoped nicknames at all
+  /// (including their own). This checks the server-enforced power level
+  /// for the nickname state event type.
+  bool get canSetNicknames => false;
+
+  /// Whether the current user can set OTHER users' nicknames.
+  /// This is a higher privilege than [canSetNicknames] and typically
+  /// requires moderator-level power (PL >= 50).
+  bool get canSetOtherUserNicknames => false;
 }

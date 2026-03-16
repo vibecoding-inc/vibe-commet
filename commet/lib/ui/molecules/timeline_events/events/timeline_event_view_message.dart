@@ -123,8 +123,13 @@ class _TimelineEventViewMessageState extends State<TimelineEventViewMessage>
   @override
   Widget build(BuildContext context) {
     var room = widget.room ?? widget.timeline?.room;
+    // Resolve nickname at build time so room state changes propagate immediately
+    var resolvedSenderName = senderName;
+    if (room != null) {
+      resolvedSenderName = room.getMemberNickname(senderId) ?? senderName;
+    }
     return TimelineEventLayoutMessage(
-      senderName: senderName,
+      senderName: resolvedSenderName,
       senderColor: senderColor,
       senderAvatar: senderAvatar,
       showSender: showSender,
@@ -137,7 +142,7 @@ class _TimelineEventViewMessageState extends State<TimelineEventViewMessage>
         if (room != null) {
           return RoomMemberList.userContextMenu(context,
               userId: senderId,
-              userDisplayName: senderName,
+              userDisplayName: resolvedSenderName,
               room: room,
               child: child,
               isSelf: senderId == room.client.self!.identifier);

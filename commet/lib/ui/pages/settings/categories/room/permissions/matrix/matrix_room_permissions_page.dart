@@ -234,6 +234,19 @@ class _MatrixRoomPermissionsPageState extends State<MatrixRoomPermissionsPage> {
             "Description for the permission to allow users to create an event on the calendar",
       );
 
+  String get labelMatrixPermissionsSetNicknamesTitle => Intl.message(
+        "Set Nicknames",
+        name: "labelMatrixPermissionsSetNicknamesTitle",
+        desc: "Title for the permission to set channel-scoped user nicknames",
+      );
+
+  String get labelMatrixPermissionsSetNicknamesDescription => Intl.message(
+        "Allows users to set channel-scoped nicknames. Note: the restriction to only own nicknames is enforced client-side",
+        name: "labelMatrixPermissionsSetNicknamesDescription",
+        desc:
+            "Description for the permission to set channel-scoped user nicknames",
+      );
+
   void initPermissions() {
     bool isCalendarRoom = widget.showCalendarPermissions;
 
@@ -309,6 +322,14 @@ class _MatrixRoomPermissionsPageState extends State<MatrixRoomPermissionsPage> {
           description: labelMatrixPermissionsRoomHistoryVisibilityDescription,
           powerLevel: 50,
           icon: Icons.history,
+        ),
+        MatrixRoomPermissionEntry(
+          key: "com.commet.nickname",
+          keyParent: "events",
+          title: labelMatrixPermissionsSetNicknamesTitle,
+          description: labelMatrixPermissionsSetNicknamesDescription,
+          powerLevel: 0,
+          icon: Icons.edit,
         ),
       ]);
     }

@@ -59,10 +59,12 @@ class _UserPanelState extends material.State<UserPanel> {
 
     final member = widget.initialMember ??
         widget.contextRoom.getMemberOrFallback(widget.userId);
-    displayName = member.displayName;
+
+    final nickname = widget.contextRoom.getMemberNickname(widget.userId);
+    displayName = nickname ?? member.displayName;
     color = member.defaultColor;
     avatar = member.avatar;
-    detail = member.detail;
+    detail = nickname != null ? member.displayName : member.detail;
   }
 
   @override

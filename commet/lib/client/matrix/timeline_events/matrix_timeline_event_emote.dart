@@ -21,7 +21,8 @@ class MatrixTimelineEventEmote extends MatrixTimelineEvent
     String? sender = event.senderId.localpart;
 
     if (timeline != null) {
-      sender = timeline.room.getMemberOrFallback(event.senderId).displayName;
+      sender = timeline.room.getMemberNickname(event.senderId) ??
+          timeline.room.getMemberOrFallback(event.senderId).displayName;
     }
 
     if (sender != null) {
