@@ -24,6 +24,7 @@ class TimelineEventViewReply extends StatefulWidget {
 
 class _TimelineEventViewReplyState extends State<TimelineEventViewReply> {
   String? senderName;
+  String? replySenderId;
   String? body;
   Color? senderColor;
 
@@ -64,9 +65,9 @@ class _TimelineEventViewReplyState extends State<TimelineEventViewReply> {
   void setStateFromEvent(TimelineEvent event) {
     setState(() {
       replyEventId = event.eventId;
+      replySenderId = event.senderId;
       var sender = widget.timeline.room.getMemberOrFallback(event.senderId);
-      senderName = widget.timeline.room.getMemberNickname(event.senderId) ??
-          sender.displayName;
+      senderName = sender.displayName;
       senderColor = sender.defaultColor;
       body = event.plainTextBody;
       loading = false;
@@ -76,6 +77,12 @@ class _TimelineEventViewReplyState extends State<TimelineEventViewReply> {
   @override
   Widget build(BuildContext context) {
     BenchmarkValues.numTimelineReplyBodyBuilt += 1;
+    // Resolve nickname at build time so room state changes propagate immediately
+    var resolvedSenderName = senderName;
+    if (replySenderId != null) {
+      resolvedSenderName =
+          widget.timeline.room.getMemberNickname(replySenderId!) ?? senderName;
+    }
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: Material(
@@ -101,7 +108,7 @@ class _TimelineEventViewReplyState extends State<TimelineEventViewReply> {
                     maxLines: 2,
                     text: TextSpan(children: [
                       TextSpan(
-                          text: "${senderName ?? "Loading"} ",
+                          text: "${resolvedSenderName ?? "Loading"} ",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium

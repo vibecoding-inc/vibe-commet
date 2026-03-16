@@ -76,5 +76,6 @@ class MatrixRoomPermissions extends Permissions {
   bool get canSetNicknames => room.canChangeStateEvent("com.commet.nickname");
 
   @override
-  bool get canSetOtherUserNicknames => room.ownPowerLevel >= 50;
+  bool get canSetOtherUserNicknames =>
+      canSetNicknames && room.ownPowerLevel >= 50;
 }

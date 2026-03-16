@@ -57,8 +57,12 @@ class _TimelineEventViewPollState extends State<TimelineEventViewPoll>
       }
     }
 
+    // Resolve nickname at build time so room state changes propagate immediately
+    var resolvedSenderName =
+        widget.timeline.room.getMemberNickname(senderId) ?? senderName;
+
     return TimelineEventLayoutMessage(
-      senderName: senderName,
+      senderName: resolvedSenderName,
       senderColor: senderColor,
       senderAvatar: senderAvatar,
       showSender: true,
@@ -105,8 +109,7 @@ class _TimelineEventViewPollState extends State<TimelineEventViewPoll>
       var sender = widget.timeline.room.getMemberOrFallback(e.senderId);
 
       senderId = sender.identifier;
-      senderName = widget.timeline.room.getMemberNickname(e.senderId) ??
-          sender.displayName;
+      senderName = sender.displayName;
       senderAvatar = sender.avatar;
       senderColor = sender.defaultColor;
       maxSelections = polls!.getMaxSelections(e);

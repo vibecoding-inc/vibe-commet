@@ -287,7 +287,8 @@ class _RoomMemberListState extends State<RoomMemberList> {
                   .removeWhere((i) => i.identifier == member.identifier),
               onUserKicked: () => roomMembers
                   .removeWhere((i) => i.identifier == member.identifier),
-              onUserRoleChanged: () => loadAllUsers());
+              onUserRoleChanged: () => loadAllUsers(),
+              onNicknameChanged: () => setState(() {}));
 
           var role = getDisplayRole(index);
           if (role != null) {

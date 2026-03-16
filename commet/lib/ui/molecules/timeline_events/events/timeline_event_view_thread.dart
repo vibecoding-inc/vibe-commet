@@ -24,6 +24,7 @@ class TimelineEventViewThread extends StatefulWidget {
 
 class _TimelineEventViewThreadState extends State<TimelineEventViewThread> {
   String? senderName;
+  String? threadSenderId;
   String? body;
   ImageProvider? senderAvatar;
   Color? senderColor;
@@ -46,6 +47,7 @@ class _TimelineEventViewThreadState extends State<TimelineEventViewThread> {
     }
 
     var sender = widget.timeline.room.getMemberOrFallback(threadEvent.senderId);
+    threadSenderId = threadEvent.senderId;
 
     if (threadEvent is TimelineEventMessage) {
       body = threadEvent.body;
@@ -53,17 +55,22 @@ class _TimelineEventViewThreadState extends State<TimelineEventViewThread> {
       body = threadEvent.stickerName;
     }
 
-    senderName = widget.timeline.room.getMemberNickname(threadEvent.senderId) ??
-        sender.displayName;
+    senderName = sender.displayName;
     senderAvatar = sender.avatar;
     senderColor = sender.defaultColor;
   }
 
   @override
   Widget build(BuildContext context) {
+    // Resolve nickname at build time so room state changes propagate immediately
+    var resolvedSenderName = senderName;
+    if (threadSenderId != null) {
+      resolvedSenderName =
+          widget.timeline.room.getMemberNickname(threadSenderId!) ?? senderName;
+    }
     return ThreadReplyFooter(
       body: body ?? "",
-      senderName: senderName ?? "Unknown Sender",
+      senderName: resolvedSenderName ?? "Unknown Sender",
       senderAvatar: senderAvatar,
       senderColor: senderColor,
       onTap: () => EventBus.openThread.add((
