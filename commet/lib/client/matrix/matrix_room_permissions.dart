@@ -64,12 +64,13 @@ class MatrixRoomPermissions extends Permissions {
   //   restrictions. The "only your own nickname" rule is enforced client-side
   //   by only showing the option for self (isSelf) when the user has basic
   //   nickname permission. A user with a different Matrix client could
-  //   bypass this restriction if they have the power level to send the event.
+  //   bypass this if the event's power level is set low enough (e.g., 0)
+  //   to allow them to send the state event.
   //
   // To allow regular users to set their own nicknames, room admins should
   // configure the power level for "com.commet.nickname" to 0 (the default
-  // in the permissions page). The moderator-level check for setting others'
-  // nicknames is enforced client-side only.
+  // in the permissions page). Moderators (PL >= 50) can set any user's
+  // nickname; regular users can only set their own (client-side restriction).
 
   @override
   bool get canSetNicknames => room.canChangeStateEvent("com.commet.nickname");
