@@ -238,10 +238,21 @@ abstract class Room {
 
   Future<void> setMemberRole(String id, Role role);
 
-  /// Gets the channel-scoped nickname for a member, or null if not set
+  /// Gets the channel-scoped nickname for a member, or null if not set.
+  ///
+  /// Nicknames are stored as room state events and are visible to all members.
   String? getMemberNickname(String userId);
 
   /// Sets the channel-scoped nickname for a member. Pass null to clear.
+  ///
+  /// Security model:
+  /// - **Server-side**: The Matrix homeserver enforces power levels for the
+  ///   nickname state event type. If the user lacks sufficient power level,
+  ///   the server rejects the request with a 403 error.
+  /// - **Client-side**: The UI restricts regular users to only setting their
+  ///   own nickname. Users with moderator power (PL >= 50) can set anyone's.
+  ///   The per-user restriction is client-side only because Matrix does not
+  ///   support per-state-key power level checks.
   Future<void> setMemberNickname(String userId, String? nickname);
 
   Future<void> setTopic(String topic);

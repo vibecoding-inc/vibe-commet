@@ -36,7 +36,8 @@ class RoomMemberList extends StatefulWidget {
       Function? onNicknameChanged}) {
     return AdaptiveContextMenu(
       items: [
-        if (isSelf || room.permissions.canSetOtherUserNicknames)
+        if ((isSelf && room.permissions.canSetNicknames) ||
+            room.permissions.canSetOtherUserNicknames)
           tiamat.ContextMenuItem(
               text: "Set Nickname",
               icon: Icons.edit,
