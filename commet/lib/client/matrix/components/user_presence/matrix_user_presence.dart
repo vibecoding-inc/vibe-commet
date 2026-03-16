@@ -7,6 +7,7 @@ import 'package:commet/client/matrix/components/typing_indicators/matrix_typing_
 import 'package:commet/client/matrix/components/user_presence/matrix_rich_presence.dart';
 import 'package:commet/client/matrix/matrix_client.dart';
 import 'package:commet/client/matrix/matrix_room.dart';
+import 'package:commet/debug/log.dart';
 import 'package:commet/utils/in_memory_cache.dart';
 import 'package:matrix/matrix.dart';
 
@@ -29,7 +30,7 @@ class MatrixUserPresenceComponent
         maxRetention: Duration(minutes: 2),
         pollFrequency: Duration(seconds: 100));
     lastSeen.onRemove.listen(onLastSeenRemoved);
-    refreshKnownRichPresenceFromRooms();
+    unawaited(refreshKnownRichPresenceFromRooms());
 
     UserPresenceLifecycleWatcher().init();
   }
@@ -155,8 +156,13 @@ class MatrixUserPresenceComponent
       }
     }
 
+    if (event.rooms?.leave?.isNotEmpty == true ||
+        event.rooms?.invite?.isNotEmpty == true) {
+      shouldRefreshRichPresence = true;
+    }
+
     if (shouldRefreshRichPresence) {
-      refreshKnownRichPresenceFromRooms();
+      unawaited(refreshKnownRichPresenceFromRooms());
     }
   }
 
@@ -281,10 +287,11 @@ class MatrixUserPresenceComponent
     ];
 
     await Future.wait(tasks);
-    refreshKnownRichPresenceFromRooms();
+    await refreshKnownRichPresenceFromRooms();
   }
 
-  void refreshKnownRichPresenceFromRooms() {
+  Future<void> refreshKnownRichPresenceFromRooms() async {
+    final previous = Map<String, UserPresenceMessage>.from(_knownRichPresence);
     final next = <String, UserPresenceMessage>{};
 
     for (var room in client.rooms.whereType<MatrixRoom>()) {
@@ -316,5 +323,43 @@ class MatrixUserPresenceComponent
     _knownRichPresence
       ..clear()
       ..addAll(next);
+
+    await emitRichPresenceDiff(previous, next);
+  }
+
+  Future<void> emitRichPresenceDiff(Map<String, UserPresenceMessage> previous,
+      Map<String, UserPresenceMessage> next) async {
+    final changedIds = <String>{...previous.keys, ...next.keys}
+        .where((userId) =>
+            previous.containsKey(userId) != next.containsKey(userId) ||
+            previous[userId]?.message != next[userId]?.message)
+        .toList();
+
+    final updates = await Future.wait(changedIds.map((userId) async {
+      UserPresence presence;
+      try {
+        final cached = await client.matrixClient
+            .fetchCurrentPresence(userId, fetchOnlyFromCached: true);
+        presence = convertPresence(cached);
+      } catch (e, s) {
+        Log.onError(e, s,
+            content:
+                "Failed to fetch cached presence while diffing rich presence");
+        presence = UserPresence(UserPresenceStatus.unknown);
+      }
+
+      final richPresence = next[userId];
+      if (presence.message == null && richPresence != null) {
+        presence = UserPresence(presence.status, message: richPresence);
+      }
+
+      return (userId, presence);
+    }));
+
+    for (var update in updates) {
+      var userId = update.$1;
+      var presence = update.$2;
+      _controller.add((userId, presence));
+    }
   }
 }
