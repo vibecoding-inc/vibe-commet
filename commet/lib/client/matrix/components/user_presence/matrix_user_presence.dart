@@ -138,7 +138,7 @@ class MatrixUserPresenceComponent
           UserPresenceStatus.unavailable => PresenceType.unavailable,
         });
 
-    await broadcastRichPresenceStatus(status, statusMessage);
+    await broadcastRichPresenceStatus(statusMessage);
   }
 
   void onSync(SyncUpdate event) {
@@ -262,15 +262,13 @@ class MatrixUserPresenceComponent
         richPresenceRoomType;
   }
 
-  Future<void> broadcastRichPresenceStatus(
-      UserPresenceStatus status, String? statusMessage) async {
+  Future<void> broadcastRichPresenceStatus(String? statusMessage) async {
     final self = client.self?.identifier;
     if (self == null) {
       return;
     }
 
     final content = {
-      "presence": status.name,
       if (statusMessage != null && statusMessage.trim().isNotEmpty)
         "status": statusMessage,
     };
@@ -305,9 +303,9 @@ class MatrixUserPresenceComponent
           continue;
         }
 
-        var userId = event.stateKey;
-        if (userId == null || userId.isEmpty) {
-          userId = event.senderId;
+        final userId = event.stateKey;
+        if (userId == null || userId.isEmpty || userId != event.senderId) {
+          continue;
         }
 
         next[userId] =
