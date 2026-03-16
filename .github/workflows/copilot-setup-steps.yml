@@ -3,9 +3,6 @@ name: "Copilot Setup Steps"
 on:
   workflow_dispatch:
 
-env:
-  PROJECT_PATH: commet
-
 jobs:
   copilot-setup-steps:
     permissions:
@@ -38,5 +35,4 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd $PROJECT_PATH
           flutter pub get
