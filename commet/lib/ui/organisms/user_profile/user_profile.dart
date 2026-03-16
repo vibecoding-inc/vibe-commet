@@ -345,7 +345,7 @@ class _UserProfileState extends State<UserProfile> {
     var text = await AdaptiveDialog.textPrompt(
       context,
       initialText: presence?.message?.message,
-      title: "Change Status",
+      title: "Change Rich Presence",
     );
     if (text != null) {
       var client = widget.client;

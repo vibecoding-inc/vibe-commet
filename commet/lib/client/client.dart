@@ -33,7 +33,8 @@ enum RoomType {
   photoAlbum,
   space,
   voipRoom,
-  calendar;
+  calendar,
+  richPresence;
 }
 
 extension ToIcon on RoomType {
@@ -44,6 +45,7 @@ extension ToIcon on RoomType {
       RoomType.space => Icons.spoke,
       RoomType.voipRoom => Icons.volume_up,
       RoomType.calendar => Icons.calendar_month,
+      RoomType.richPresence => Icons.sports_esports,
     };
   }
 }
@@ -56,6 +58,7 @@ extension ToString on RoomType {
       RoomType.space => "Space",
       RoomType.voipRoom => "Voice Chat",
       RoomType.calendar => "Calendar",
+      RoomType.richPresence => "Rich Presence",
     };
   }
 }

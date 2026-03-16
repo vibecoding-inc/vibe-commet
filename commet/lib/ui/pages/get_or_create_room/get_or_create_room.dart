@@ -7,6 +7,7 @@ import 'package:commet/ui/pages/get_or_create_room/calendar_views.dart';
 import 'package:commet/ui/pages/get_or_create_room/existing_room_picker.dart';
 import 'package:commet/ui/pages/get_or_create_room/join_room_view.dart';
 import 'package:commet/ui/pages/get_or_create_room/photo_album_views.dart';
+import 'package:commet/ui/pages/get_or_create_room/rich_presence_views.dart';
 import 'package:commet/ui/pages/get_or_create_room/room_creator.dart';
 import 'package:commet/ui/pages/get_or_create_room/space_views.dart';
 import 'package:commet/ui/pages/get_or_create_room/text_chat_views.dart';
@@ -137,6 +138,25 @@ class GetOrCreateRoom extends StatefulWidget {
               RoomFieldVisibility(client: client!, currentSpace: currentSpace),
               RoomFieldEncryption(defaultEnabled: true),
               RoomFieldType(RoomType.calendar),
+            ],
+          ),
+          create: (args) async {
+            return SpaceChildRoom(await client!.createRoom(args));
+          },
+        ),
+      if (showAllRoomTypes)
+        RoomGetter(
+          label: "Rich Presence",
+          icon: Icons.sports_esports,
+          descriptionBuilder: (context) => RichPresenceCreatorDescription(),
+          formBuilder: (context, {onPicked}) => RoomCreatorWidget(
+            fields: [
+              RoomFieldName(),
+              RoomFieldTopic(),
+              RoomFieldVisibility(client: client!, currentSpace: currentSpace),
+              RoomFieldEncryption(
+                  canEnableEncryption: false, defaultEnabled: false),
+              RoomFieldType(RoomType.richPresence),
             ],
           ),
           create: (args) async {

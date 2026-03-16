@@ -10,6 +10,7 @@ import 'package:commet/client/matrix/auth/matrix_sso_login_flow.dart';
 import 'package:commet/client/matrix/auth/matrix_username_password_login_flow.dart';
 import 'package:commet/client/matrix/components/matrix_sync_listener.dart';
 import 'package:commet/client/matrix/components/profile/matrix_profile_component.dart';
+import 'package:commet/client/matrix/components/user_presence/matrix_rich_presence.dart';
 import 'package:commet/client/matrix/components/voip_room/matrix_voip_room_component.dart';
 import 'package:commet/client/matrix/database/matrix_database.dart';
 import 'package:commet/client/matrix/extensions/matrix_client_extensions.dart';
@@ -468,6 +469,15 @@ class MatrixClient extends Client {
           type: "io.element.widgets.layout",
         ),
       ];
+    }
+
+    if (args.roomType == RoomType.richPresence) {
+      creationContent = {"type": richPresenceRoomType};
+      powerLevelAdditions = {
+        "events": {
+          richPresenceStateEventType: 0,
+        }
+      };
     }
 
     var visibility = switch (args.visibility) {

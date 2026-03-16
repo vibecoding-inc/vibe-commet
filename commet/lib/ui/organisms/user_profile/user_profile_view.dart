@@ -447,12 +447,12 @@ class _UserProfileViewState extends State<UserProfileView> {
             icon: Icons.image),
       if (widget.isSelf)
         tiamat.ContextMenuItem(
-            text: "Set Status",
+            text: "Set Rich Presence",
             onPressed: () => widget.onSetStatus?.call(),
             icon: Icons.short_text),
       if (widget.isSelf && widget.presence?.message != null)
         tiamat.ContextMenuItem(
-            text: "Clear Status",
+            text: "Clear Rich Presence",
             onPressed: () => widget.clearStatus?.call(),
             icon: Icons.delete),
       if (widget.isSelf)
