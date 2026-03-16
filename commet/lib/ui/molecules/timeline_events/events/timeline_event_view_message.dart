@@ -227,7 +227,7 @@ class _TimelineEventViewMessageState extends State<TimelineEventViewMessage>
     eventId = event.eventId;
 
     senderId = sender.identifier;
-    senderName = sender.displayName;
+    senderName = room.getMemberNickname(event.senderId) ?? sender.displayName;
     senderAvatar = sender.avatar;
     senderColor = sender.defaultColor;
 

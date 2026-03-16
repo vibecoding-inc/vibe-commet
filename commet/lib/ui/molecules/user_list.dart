@@ -32,9 +32,30 @@ class RoomMemberList extends StatefulWidget {
       required bool isSelf,
       Function? onUserKicked,
       Function? onUserBanned,
-      Function? onUserRoleChanged}) {
+      Function? onUserRoleChanged,
+      Function? onNicknameChanged}) {
     return AdaptiveContextMenu(
       items: [
+        if (isSelf || room.permissions.canSetOtherUserNicknames)
+          tiamat.ContextMenuItem(
+              text: "Set Nickname",
+              icon: Icons.edit,
+              onPressed: () async {
+                ErrorUtils.tryRun(context, () async {
+                  var currentNickname = room.getMemberNickname(userId);
+                  var text = await AdaptiveDialog.textPrompt(
+                    context,
+                    title: "Set Nickname for $userDisplayName",
+                    initialText: currentNickname,
+                    hintText: "Nickname",
+                  );
+                  if (text != null) {
+                    await room.setMemberNickname(
+                        userId, text.trim().isEmpty ? null : text.trim());
+                    onNicknameChanged?.call();
+                  }
+                });
+              }),
         if (room.permissions.canChangeRoles)
           tiamat.ContextMenuItem(
               text: "Set Role",

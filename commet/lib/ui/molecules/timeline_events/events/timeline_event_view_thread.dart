@@ -53,7 +53,8 @@ class _TimelineEventViewThreadState extends State<TimelineEventViewThread> {
       body = threadEvent.stickerName;
     }
 
-    senderName = sender.displayName;
+    senderName = widget.timeline.room.getMemberNickname(threadEvent.senderId) ??
+        sender.displayName;
     senderAvatar = sender.avatar;
     senderColor = sender.defaultColor;
   }

@@ -238,6 +238,12 @@ abstract class Room {
 
   Future<void> setMemberRole(String id, Role role);
 
+  /// Gets the channel-scoped nickname for a member, or null if not set
+  String? getMemberNickname(String userId);
+
+  /// Sets the channel-scoped nickname for a member. Pass null to clear.
+  Future<void> setMemberNickname(String userId, String? nickname);
+
   Future<void> setTopic(String topic);
 
   Future<void> markAsRead();

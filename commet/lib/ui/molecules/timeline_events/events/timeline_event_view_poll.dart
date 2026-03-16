@@ -105,7 +105,8 @@ class _TimelineEventViewPollState extends State<TimelineEventViewPoll>
       var sender = widget.timeline.room.getMemberOrFallback(e.senderId);
 
       senderId = sender.identifier;
-      senderName = sender.displayName;
+      senderName = widget.timeline.room.getMemberNickname(e.senderId) ??
+          sender.displayName;
       senderAvatar = sender.avatar;
       senderColor = sender.defaultColor;
       maxSelections = polls!.getMaxSelections(e);

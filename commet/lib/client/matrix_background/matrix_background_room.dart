@@ -359,4 +359,14 @@ class MatrixBackgroundRoom implements Room {
     // TODO: implement setVisibility
     throw UnimplementedError();
   }
+
+  @override
+  String? getMemberNickname(String userId) {
+    return null;
+  }
+
+  @override
+  Future<void> setMemberNickname(String userId, String? nickname) {
+    throw UnimplementedError();
+  }
 }
