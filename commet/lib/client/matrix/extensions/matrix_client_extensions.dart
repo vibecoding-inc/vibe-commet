@@ -1,5 +1,6 @@
 import 'package:commet/client/client.dart' as commet;
 import 'package:commet/client/matrix/components/emoticon/matrix_emoticon_component.dart';
+import 'package:commet/client/matrix/components/user_presence/matrix_rich_presence.dart';
 import 'package:commet/client/matrix/matrix_mxc_image_provider.dart';
 import 'package:commet/client/room_preview.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ extension MatrixExtensions on Client {
       "chat.commet.calendar" => commet.RoomType.calendar,
       "chat.commet.photo_album" => commet.RoomType.photoAlbum,
       "org.matrix.msc3417.call" => commet.RoomType.voipRoom,
+      richPresenceRoomType => commet.RoomType.richPresence,
       _ => commet.RoomType.defaultRoom
     };
 
