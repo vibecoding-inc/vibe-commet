@@ -819,6 +819,9 @@ class MatrixRoom extends Room {
     await matrixRoom.waitForRoomInSync();
   }
 
+  // Custom state event type for per-room user nicknames.
+  // State key: user ID (e.g., "@user:matrix.org")
+  // Content: { "nickname": "Display Name" } or {} to clear
   static const nicknameEventType = "com.commet.nickname";
 
   @override

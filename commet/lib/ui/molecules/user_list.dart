@@ -50,8 +50,9 @@ class RoomMemberList extends StatefulWidget {
                     hintText: "Nickname",
                   );
                   if (text != null) {
+                    var trimmed = text.trim();
                     await room.setMemberNickname(
-                        userId, text.trim().isEmpty ? null : text.trim());
+                        userId, trimmed.isEmpty ? null : trimmed);
                     onNicknameChanged?.call();
                   }
                 });
