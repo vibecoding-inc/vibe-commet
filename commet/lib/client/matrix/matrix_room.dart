@@ -819,6 +819,24 @@ class MatrixRoom extends Room {
   }
 
   @override
+  Future<void> setMemberNickname(String userId, String nickname) async {
+    final state =
+        matrixRoom.getState(matrix.EventTypes.RoomMember, userId);
+    final content =
+        Map<String, dynamic>.from(state?.content ?? {'membership': 'join'});
+    content['displayname'] = nickname;
+    await _matrixRoom.client.setRoomStateWithKey(
+        _matrixRoom.id, matrix.EventTypes.RoomMember, userId, content);
+  }
+
+  @override
+  String? getMemberNickname(String userId) {
+    final state =
+        matrixRoom.getState(matrix.EventTypes.RoomMember, userId);
+    return state?.content['displayname'] as String?;
+  }
+
+  @override
   String? get topic => matrixRoom.topic;
 
   @override

@@ -32,9 +32,28 @@ class RoomMemberList extends StatefulWidget {
       required bool isSelf,
       Function? onUserKicked,
       Function? onUserBanned,
-      Function? onUserRoleChanged}) {
+      Function? onUserRoleChanged,
+      Function? onUserNicknameChanged}) {
     return AdaptiveContextMenu(
       items: [
+        if (isSelf || room.permissions.canEditOthersMemberNickname)
+          tiamat.ContextMenuItem(
+              text: "Set Nickname",
+              icon: Icons.edit,
+              onPressed: () async {
+                ErrorUtils.tryRun(context, () async {
+                  var currentNickname = room.getMemberNickname(userId);
+                  var nickname = await AdaptiveDialog.textPrompt(context,
+                      title: "Set Nickname for $userDisplayName",
+                      submitText: "Save",
+                      hintText: "Nickname",
+                      initialText: currentNickname);
+                  if (nickname != null && nickname.isNotEmpty) {
+                    await room.setMemberNickname(userId, nickname);
+                    onUserNicknameChanged?.call();
+                  }
+                });
+              }),
         if (room.permissions.canChangeRoles)
           tiamat.ContextMenuItem(
               text: "Set Role",
@@ -264,7 +283,8 @@ class _RoomMemberListState extends State<RoomMemberList> {
                   .removeWhere((i) => i.identifier == member.identifier),
               onUserKicked: () => roomMembers
                   .removeWhere((i) => i.identifier == member.identifier),
-              onUserRoleChanged: () => loadAllUsers());
+              onUserRoleChanged: () => loadAllUsers(),
+              onUserNicknameChanged: () => loadAllUsers());
 
           var role = getDisplayRole(index);
           if (role != null) {

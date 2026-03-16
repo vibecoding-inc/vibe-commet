@@ -48,4 +48,8 @@ class MatrixRoomPermissions extends Permissions {
   @override
   bool get canChangeVisibility =>
       room.canChangeStateEvent(matrix.EventTypes.RoomJoinRules);
+
+  @override
+  bool get canEditOthersMemberNickname =>
+      room.canChangeStateEvent(matrix.EventTypes.RoomMember);
 }

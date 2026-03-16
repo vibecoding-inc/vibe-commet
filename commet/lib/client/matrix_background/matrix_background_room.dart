@@ -329,6 +329,18 @@ class MatrixBackgroundRoom implements Room {
   }
 
   @override
+  Future<void> setMemberNickname(String userId, String nickname) {
+    // TODO: implement setMemberNickname
+    throw UnimplementedError();
+  }
+
+  @override
+  String? getMemberNickname(String userId) {
+    // TODO: implement getMemberNickname
+    throw UnimplementedError();
+  }
+
+  @override
   // TODO: implement topic
   String? get topic => throw UnimplementedError();
 

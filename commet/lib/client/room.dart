@@ -238,6 +238,10 @@ abstract class Room {
 
   Future<void> setMemberRole(String id, Role role);
 
+  Future<void> setMemberNickname(String userId, String nickname);
+
+  String? getMemberNickname(String userId);
+
   Future<void> setTopic(String topic);
 
   Future<void> markAsRead();
